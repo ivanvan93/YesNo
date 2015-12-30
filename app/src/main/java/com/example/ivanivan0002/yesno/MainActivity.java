@@ -16,11 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     int test;
     TextView resultNo, resultYes, question;
-    Button yes, no, admin;
+    Button yes, no;
+    ImageButton admin;
     Firebase firebaseRef, yesData, noData, questionData, pastQuestionsRef;
     int yesCount, noCount;
     ListView pastQuestions;
@@ -82,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
         yes = (Button) findViewById(R.id.buttonYes);
         no = (Button) findViewById(R.id.buttonNo);
         pastQuestions = (ListView) findViewById(R.id.listViewPastQuestions);
-        admin = (Button) findViewById(R.id.buttonAdmin);
+        admin = (ImageButton) findViewById(R.id.buttonAdmin);
+
+        admin.setImageResource(R.mipmap.ic_launcher);
 
         admin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +121,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //question.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
         // Hide everything until data is loaded?
         question.setVisibility(View.GONE);
         yes.setVisibility(View.GONE);
         no.setVisibility(View.GONE);
         pastQuestions.setVisibility(View.GONE);
+        admin.setVisibility(View.GONE);
 
         // Set loading
         progress = new ProgressDialog(this);
@@ -143,6 +151,25 @@ public class MainActivity extends AppCompatActivity {
         questions = new ArrayList<Question>();
         adapter = new ArrayAdapter<String>(this, R.layout.question_cell, pastQuestions_string);
         pastQuestions.setAdapter(adapter);
+        pastQuestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                Question thisQuestion = questions.get(position);
+                builder.setMessage(thisQuestion.getQuestion() + "\nYes: " + thisQuestion.getYesResult() + "\n" +
+                        "No: " + thisQuestion.getNoResult());
+                /*
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("itemLongClick()", "Clicked! " + position);
+                    }
+                });
+                */
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
         pastQuestions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -190,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 yes.setVisibility(View.VISIBLE);
                 no.setVisibility(View.VISIBLE);
                 pastQuestions.setVisibility(View.VISIBLE);
+                admin.setVisibility(View.VISIBLE);
             }
 
             @Override

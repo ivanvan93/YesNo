@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -18,7 +19,7 @@ import com.firebase.client.ValueEventListener;
 
 public class Admin extends AppCompatActivity {
 
-    Button submit;
+    Button submit, clearHistory;
     EditText newQuestion;
     Firebase firebaseRef, history, newOldEntry;
     int historyCount;
@@ -34,6 +35,7 @@ public class Admin extends AppCompatActivity {
 
         submit = (Button)findViewById(R.id.buttonSubmitNewQuestion);
         newQuestion = (EditText)findViewById(R.id.editTextNewQuestion);
+        clearHistory = (Button) findViewById(R.id.buttonClearHistory);
 
         // Get the history count
         history = firebaseRef.child("History");
@@ -62,6 +64,17 @@ public class Admin extends AppCompatActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
 
+            }
+        });
+
+        clearHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i <= historyCount; i++) {
+                    firebaseRef.child("History").child(Integer.toString(i)).setValue(null);
+                    finish();
+                }
+                Toast toast = Toast.makeText(getApplicationContext(), "History cleared!", Toast.LENGTH_SHORT);
             }
         });
 

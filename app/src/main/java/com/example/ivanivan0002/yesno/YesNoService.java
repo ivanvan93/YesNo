@@ -51,6 +51,8 @@ public class YesNoService extends IntentService {
                     builder.setContentTitle("YesNo");
                     builder.setContentText("A new question has arrived!");
                     builder.setAutoCancel(true);
+                    builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), (int) System.currentTimeMillis(), intent, 0);
 
