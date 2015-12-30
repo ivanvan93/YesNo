@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +37,8 @@ public class Admin extends AppCompatActivity {
         submit = (Button)findViewById(R.id.buttonSubmitNewQuestion);
         newQuestion = (EditText)findViewById(R.id.editTextNewQuestion);
         clearHistory = (Button) findViewById(R.id.buttonClearHistory);
+
+        newQuestion.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         // Get the history count
         history = firebaseRef.child("History");
@@ -75,12 +78,20 @@ public class Admin extends AppCompatActivity {
                     finish();
                 }
                 Toast toast = Toast.makeText(getApplicationContext(), "History cleared!", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // check if the string ends with a question mark
+                if(newQuestion.getText().toString().substring(newQuestion.getText().toString().length()-1).compareTo("?") != 0){
+                    Toast toast = Toast.makeText(getApplicationContext(), "Your question does not end with a ?", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
 
                 // Get the old result and put it in the new one
                 newOldEntry = history.child(Integer.toString(historyCount));
